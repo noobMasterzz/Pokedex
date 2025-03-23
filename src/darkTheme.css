@@ -1,0 +1,167 @@
+/* Dark Theme Styles */
+[data-theme='dark'] body {
+    background: linear-gradient(135deg, #2c3e50 0%, #2c3e50 50%, #1a1a1a 50%, #1a1a1a 100%);
+}
+
+[data-theme='dark'] .title {
+    color: #f1f1f1;
+    -webkit-text-stroke: 2px #ff5350;
+}
+
+[data-theme='dark'] .card {
+    background: rgba(40, 44, 52, 0.95);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .card-title {
+    color: #f1f1f1;
+}
+
+[data-theme='dark'] .card-description {
+    color: #a8a8a8;
+}
+
+[data-theme='dark'] .pokemon-stats {
+    color: #f1f1f1;
+}
+
+[data-theme='dark'] .stat-name,
+[data-theme='dark'] .stat-value {
+    color: #f1f1f1;
+}
+
+[data-theme='dark'] .stat-bar-fill {
+    background: #3a3a3a;
+}
+
+
+
+[data-theme='dark'] .search-input {
+    background: #1a1a1a;
+    border-color: #ff5350;
+    color: #f1f1f1;
+}
+
+[data-theme='dark'] .search-input::placeholder {
+    color: #888;
+}
+
+[data-theme='dark'] .page-number {
+    background: #1a1a1a;
+    border-color: #ff5350;
+    color: #f1f1f1;
+}
+
+[data-theme='dark'] .page-number.active {
+    background: linear-gradient(45deg, #ff5350, #ff7675);
+    color: #f1f1f1;
+}
+
+[data-theme='dark'] .page-ellipsis {
+    color: #f1f1f1;
+}
+
+[data-theme='dark'] .items-per-page {
+    background: rgba(26, 26, 26, 0.5);
+    color: #f1f1f1;
+}
+
+[data-theme='dark'] .items-per-page select {
+    background: #1a1a1a;
+    border-color: #ff5350;
+    color: #f1f1f1;
+}
+
+[data-theme='dark'] .type-tag {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme='dark'] .ability-item {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme='dark'] .evolution-item {
+    background: rgba(26, 26, 26, 0.7);
+}
+
+[data-theme='dark'] .evolution-arrow {
+    color: #f1f1f1;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #ff5350, #ff7675);
+    border: 3px solid #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme='dark'] .theme-toggle {
+    background: linear-gradient(45deg, #2c3e50, #3498db);
+}
+
+.theme-toggle img {
+    width: 24px;
+    height: 24px;
+    filter: brightness(0) invert(1);
+    transition: transform 0.3s ease;
+}
+
+.theme-toggle:hover img {
+    transform: rotate(180deg);
+}
+
+/* Dark Theme Loading Screen */
+[data-theme='dark'] .loading-screen {
+    background: linear-gradient(135deg, #2c3e50 0%, #2c3e50 50%, #1a1a1a 50%, #1a1a1a 100%);
+}
+
+[data-theme='dark'] .loading-text {
+    color: #f1f1f1;
+    -webkit-text-stroke: 1px #ff5350;
+}
+
+[data-theme='dark'] .pokeball {
+    border-color: #ff5350;
+}
+
+[data-theme='dark'] .pokeball::after {
+    border-color: #ff5350;
+    box-shadow: 0 0 0 2px #1a1a1a;
+}
+
+[data-theme='dark'] .pokeball-line {
+    background: #ff5350;
+}
+
+/* Responsive Dark Theme Adjustments */
+@media screen and (max-width: 768px) {
+    .theme-toggle {
+        top: 10px;
+        right: 10px;
+        width: 40px;
+        height: 40px;
+    }
+
+    .theme-toggle img {
+        width: 20px;
+        height: 20px;
+    }
+} 
