@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import './loading.css';
 
 function Pokedex() {
     const [pokemon, setPokemon] = useState(null);
@@ -252,6 +253,7 @@ function Pokedex() {
         };
 
         return (
+            <div className="card-container">
             <div className="card">
                 <img 
                     src={pokemon.sprites.front_default} 
@@ -376,6 +378,7 @@ function Pokedex() {
                     )}
                 </div>
             </div>
+        </div>
         );
     };
 
@@ -414,6 +417,16 @@ function Pokedex() {
 
     return (
         <div className="cards-wrapper">
+            {loading && (
+                <div className="loading-screen">
+                    <div className="pokeball">
+                        <div className="pokeball-line"></div>
+                        <div className="glow"></div>
+                    </div>
+                    <div className="loading-text loading-dots">Catching Pokémon</div>
+                </div>
+            )}
+            
             {isPageTransitioning && <div className="loading-transition" />}
             
             <button 
@@ -510,25 +523,10 @@ function Pokedex() {
                         <span>per page</span>
                     </div>
 
-                    <button
-                        className="pagination-button"
-                        onClick={() => handlePageChange(1)}
-                        disabled={currentPage === 1}
-                    >
-                        ⟪ First
-                    </button>
-                    <button
-                        className="pagination-button"
-                        onClick={() => handlePageChange(currentPage - 1)}
-                        disabled={currentPage === 1}
-                    >
-                        ← Previous
-                    </button>
-
                     <div className="page-numbers">
                         {getPageNumbers().map((pageNum, index) => (
                             pageNum === '...' ? (
-                                <span key={`ellipsis-${index}`} className="page-ellipsis">...</span>
+                                <span key={`ellipsis-${index}`} className="page-ellipsis">•••</span>
                             ) : (
                                 <button
                                     key={pageNum}
@@ -541,20 +539,36 @@ function Pokedex() {
                         ))}
                     </div>
 
-                    <button
-                        className="pagination-button"
-                        onClick={() => handlePageChange(currentPage + 1)}
-                        disabled={currentPage >= Math.ceil(totalPokemon / itemsPerPage)}
-                    >
-                        Next →
-                    </button>
-                    <button
-                        className="pagination-button"
-                        onClick={() => handlePageChange(Math.ceil(totalPokemon / itemsPerPage))}
-                        disabled={currentPage >= Math.ceil(totalPokemon / itemsPerPage)}
-                    >
-                        Last ⟫
-                    </button>
+                    <div className="pagination-navigation">
+                        <button
+                            className="pagination-button"
+                            onClick={() => handlePageChange(1)}
+                            disabled={currentPage === 1}
+                        >
+                            ⟪ First
+                        </button>
+                        <button
+                            className="pagination-button"
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage === 1}
+                        >
+                            ← Prev
+                        </button>
+                        <button
+                            className="pagination-button"
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            disabled={currentPage >= Math.ceil(totalPokemon / itemsPerPage)}
+                        >
+                            Next →
+                        </button>
+                        <button
+                            className="pagination-button"
+                            onClick={() => handlePageChange(Math.ceil(totalPokemon / itemsPerPage))}
+                            disabled={currentPage >= Math.ceil(totalPokemon / itemsPerPage)}
+                        >
+                            Last ⟫
+                        </button>
+                    </div>
                 </div>
             )}
         </div>
