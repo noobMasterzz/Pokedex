@@ -164,4 +164,8 @@
         width: 20px;
         height: 20px;
     }
+}
+
+[data-theme='dark'] .type-section h4 {
+    color: #f1f1f1;
 } 
