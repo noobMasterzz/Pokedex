@@ -237,10 +237,10 @@ body {
 
 .home-button {
     position: fixed;
-    top: 10px;
-    left: 10px;
-    width: 40px;
-    height: 40px;
+    top: 20px;
+    left: 20px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     background: linear-gradient(45deg, #ff5350, #ff7675);
     border: 3px solid #ffffff;
@@ -250,6 +250,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 1001; /* Ensure it's above other fixed elements */
 }
 
 .home-button:hover {
@@ -655,7 +656,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    z-index: 1001;
     opacity: 0;
     visibility: hidden;
 }
@@ -897,6 +898,26 @@ body {
     background: linear-gradient(45deg, #ff5350, #ff7675);
     transform: translateY(-2px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Adjust theme toggle position to not conflict with home button */
+.theme-toggle {
+    z-index: 1001;
+}
+
+/* Mobile adjustments */
+@media screen and (max-width: 768px) {
+    .home-button {
+        top: 10px;
+        left: 10px;
+        width: 40px;
+        height: 40px;
+    }
+
+    .home-button img {
+        width: 24px;
+        height: 24px;
+    }
 }
 
 
