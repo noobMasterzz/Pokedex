@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import './loading.css';
 import './darkTheme.css';
+import Modal from './components/Modal';
 
 function Pokedex() {
     const [pokemon, setPokemon] = useState(null);
     const [allPokemon, setAllPokemon] = useState([]);
-    const [displayedPokemon, setDisplayedPokemon] = useState([]);
     const [query, setQuery] = useState("");
     const [loading, setLoading] = useState(false);
     const [searchHistory, setSearchHistory] = useState([]);
@@ -15,14 +15,11 @@ function Pokedex() {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(20);
     const [totalPokemon, setTotalPokemon] = useState(0);
-    const [sortBy, setSortBy] = useState("id");
-    const [sortOrder, setSortOrder] = useState("asc");
-    const [typeFilter, setTypeFilter] = useState([]);
-    const [categoryFilter, setCategoryFilter] = useState([]);
     const [isPageTransitioning, setIsPageTransitioning] = useState(false);
     const [showScrollTop, setShowScrollTop] = useState(false);
     const [showScrollBottom, setShowScrollBottom] = useState(true);
     const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+    const [selectedPokemon, setSelectedPokemon] = useState(null);
 
     // Type effectiveness mapping
     const typeEffectiveness = {
@@ -150,16 +147,6 @@ function Pokedex() {
         setCurrentPage(1); // Reset to first page when changing items per page
     };
 
-    const addToSearchHistory = (pokemonName) => {
-        const updatedHistory = [
-            pokemonName,
-            ...searchHistory.filter(name => name !== pokemonName)
-        ].slice(0, 5); // Keep only the last 5 searches
-        
-        setSearchHistory(updatedHistory);
-        localStorage.setItem('pokemonSearchHistory', JSON.stringify(updatedHistory));
-    };
-
     const fetchPokemon = async (searchQuery = query.trim()) => {
         if (!searchQuery) {
             setPokemon(null);
@@ -235,44 +222,23 @@ function Pokedex() {
     };
 
     const PokemonCard = ({ pokemon }) => {
-        // Calculate max stat value for the stat bars
-        const maxStat = Math.max(...pokemon.stats.map(stat => stat.base_stat));
-        
-        // Map stat names to more readable format
-        const statNames = {
-            'hp': 'HP',
-            'attack': 'Attack',
-            'defense': 'Defense',
-            'special-attack': 'Sp. Atk',
-            'special-defense': 'Sp. Def',
-            'speed': 'Speed'
-        };
-
-        const handleEvolutionClick = (pokemonName) => {
-            setQuery(pokemonName);
-            fetchPokemon(pokemonName);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-
         return (
             <div className="card-container">
-            <div className="card">
-                <img 
-                    src={pokemon.sprites.front_default} 
-                    alt={pokemon.name}
-                />
-                <h2 className="card-title">
-                    {pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}
-                </h2>
-                <div className="card-description">
-                    <p className={`pokemon-category ${pokemon.category.toLowerCase()}`}>
-                        {pokemon.category}
-                    </p>
-                    <p>{pokemon.description}</p>
-                </div>
-                <div className="pokemon-stats">
+                <div className="card" onClick={() => setSelectedPokemon(pokemon)}>
+                    <img 
+                        src={pokemon.sprites.front_default} 
+                        alt={pokemon.name}
+                    />
+                    <h2 className="card-title">
+                        {pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}
+                    </h2>
+                    <div className="card-description">
+                        <p className={`pokemon-category ${pokemon.category.toLowerCase()}`}>
+                            {pokemon.category}
+                        </p>
+                        <p>{pokemon.description}</p>
+                    </div>
                     <div className="type-section">
-                        <h4>Type:</h4>
                         <div className="type-list">
                             {pokemon.types.map(t => 
                                 <span key={t.type.name} className="type-tag">
@@ -281,106 +247,8 @@ function Pokedex() {
                             )}
                         </div>
                     </div>
-
-                    <div className="abilities-section">
-                        <h4>Abilities:</h4>
-                        <div className="type-list">
-                            {pokemon.abilities.map(ability => (
-                                <span 
-                                    key={ability.ability.name}
-                                    className={`ability-item ${ability.is_hidden ? 'hidden' : ''}`}
-                                    title={ability.is_hidden ? 'Hidden Ability' : 'Regular Ability'}
-                                >
-                                    {ability.ability.name.split('-').map(word => 
-                                        word.charAt(0).toUpperCase() + word.slice(1)
-                                    ).join(' ')}
-                                </span>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="stats-section">
-                        <h4>Base Stats:</h4>
-                        {pokemon.stats.map(stat => (
-                            <div key={stat.stat.name} className="stat-bar">
-                                <span className="stat-name">
-                                    {statNames[stat.stat.name]}
-                                </span>
-                                <span className="stat-value">
-                                    {stat.base_stat}
-                                </span>
-                                <div className="stat-bar-fill">
-                                    <div 
-                                        className={`stat-${stat.stat.name}`}
-                                        style={{
-                                            width: `${(stat.base_stat / maxStat) * 100}%`
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-
-                    {pokemon.weaknesses && pokemon.weaknesses.length > 0 && (
-                        <div className="type-section">
-                            <h4>Weaknesses:</h4>
-                            <div className="type-list">
-                                {pokemon.weaknesses.map(weakness => (
-                                    <span key={weakness} className="type-tag weakness">
-                                        {weakness.charAt(0).toUpperCase() + weakness.slice(1)}
-                                    </span>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                    {pokemon.strengths && pokemon.strengths.length > 0 && (
-                        <div className="type-section">
-                            <h4>Strong Against:</h4>
-                            <div className="type-list">
-                                {pokemon.strengths.map(strength => (
-                                    <span key={strength} className="type-tag strength">
-                                        {strength.charAt(0).toUpperCase() + strength.slice(1)}
-                                    </span>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
-                    {pokemon.evolutionChain && pokemon.evolutionChain.length > 1 && (
-                        <div className="evolution-section">
-                            <h4>Evolution Chain:</h4>
-                            <div className="evolution-chain">
-                                {pokemon.evolutionChain.map((evo, index) => (
-                                    <>
-                                        <div 
-                                            key={evo.name}
-                                            className="evolution-item"
-                                            onClick={() => handleEvolutionClick(evo.name)}
-                                            title={`Click to view ${evo.name}`}
-                                        >
-                                            <img src={evo.sprite} alt={evo.name} />
-                                            <span>
-                                                {evo.name.charAt(0).toUpperCase() + evo.name.slice(1)}
-                                            </span>
-                                        </div>
-                                        {index < pokemon.evolutionChain.length - 1 && (
-                                            <div className="evolution-arrow">
-                                                →
-                                                {pokemon.evolutionChain[index + 1].min_level && (
-                                                    <span className="evolution-level">
-                                                        Level {pokemon.evolutionChain[index + 1].min_level}
-                                                    </span>
-                                                )}
-                                            </div>
-                                        )}
-                                    </>
-                                ))}
-                            </div>
-                        </div>
-                    )}
                 </div>
             </div>
-        </div>
         );
     };
 
@@ -599,6 +467,13 @@ function Pokedex() {
                         </button>
                     </div>
                 </div>
+            )}
+
+            {selectedPokemon && (
+                <Modal 
+                    pokemon={selectedPokemon} 
+                    onClose={() => setSelectedPokemon(null)} 
+                />
             )}
         </div>
     );
