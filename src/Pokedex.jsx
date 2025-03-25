@@ -20,6 +20,8 @@ function Pokedex() {
     const [showScrollBottom, setShowScrollBottom] = useState(true);
     const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
     const [selectedPokemon, setSelectedPokemon] = useState(null);
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState("");
 
     // Type effectiveness mapping
     const typeEffectiveness = {
@@ -147,6 +149,13 @@ function Pokedex() {
         setCurrentPage(1); // Reset to first page when changing items per page
     };
 
+    const addToSearchHistory = (pokemonName) => {
+        setSearchHistory(prevHistory => {
+            const newHistory = [pokemonName, ...prevHistory.filter(name => name !== pokemonName)].slice(0, 5);
+            return newHistory;
+        });
+    };
+
     const fetchPokemon = async (searchQuery = query.trim()) => {
         if (!searchQuery) {
             setPokemon(null);
@@ -159,9 +168,11 @@ function Pokedex() {
             const pokemonWithSpecies = await getPokemonWithSpecies(response.data);
             setPokemon(pokemonWithSpecies);
             addToSearchHistory(searchQuery.toLowerCase());
+            setShowAlert(false);
         } catch (error) {
             setPokemon(null);
-            alert("Pokémon not found!");
+            setAlertMessage(`Oops! ${searchQuery} wasn't caught!`);
+            setShowAlert(true);
         } finally {
             setLoading(false);
         }
@@ -298,6 +309,22 @@ function Pokedex() {
         document.documentElement.setAttribute('data-theme', theme);
     }, []);
 
+    // Add this new component inside the Pokedex component
+    const Alert = ({ message, onClose }) => {
+        return (
+            <div className="alert-overlay">
+                <div className="alert-content">
+                    <div className="alert-pokeball">
+                        <div className="alert-pokeball-line"></div>
+                        <div className="alert-glow"></div>
+                    </div>
+                    <p className="alert-message">{message}</p>
+                    <button className="alert-close" onClick={onClose}>×</button>
+                </div>
+            </div>
+        );
+    };
+
     return (
         <div className="cards-wrapper">
             {loading && (
@@ -308,6 +335,13 @@ function Pokedex() {
                     </div>
                     <div className="loading-text loading-dots">Catching Pokémon</div>
                 </div>
+            )}
+            
+            {showAlert && (
+                <Alert 
+                    message={alertMessage} 
+                    onClose={() => setShowAlert(false)} 
+                />
             )}
             
             {isPageTransitioning && <div className="loading-transition" />}
